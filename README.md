@@ -1,14 +1,14 @@
-Retail Sales Data Warehouse | End-to-End ETL Pipeline  
-Engineering Lead: Omar Essam  
+Retail Sales Data Warehouse | End-to-End ETL Pipeline
+Engineering Lead: Omar Essam
 
 ---
 
 Tech Stack
-- Database: PostgreSQL  
-- Language: SQL (Advanced: CTEs, Window Functions, Pattern Matching)  
-- Architecture: Data Modeling (Star Schema Design)  
-- Core Skills: ETL Pipeline Design, Data Cleaning, & Transformation  
-- Analytics: Business Intelligence Concepts (RFM, Cohort Analysis)  
+- Database: PostgreSQL
+- Language: SQL (Advanced: CTEs, Window Functions, Pattern Matching)
+- Architecture: Data Modeling (Star Schema Design)
+- Core Skills: ETL Pipeline Design, Data Cleaning, & Transformation
+- Analytics: Business Intelligence Concepts (RFM, Cohort Analysis)
 
 ---
 
@@ -125,8 +125,8 @@ Transforming the cleaned data into high-value executive insights.
 
 ---
 
-3.1 Advanced Cohort Analysis
-Established **Primary Keys (PK)** and **Foreign Keys (FK)** across all final tables (`customer_final`, `item_final`, `store_final`, `time_final`, `trans_final`, `fact_table_final`) to enforce referential integrity across the Star Schema.  
+3.1 Schema Integrity & Star Schema Finalization
+Established **Primary Keys (PK)** and **Foreign Keys (FK)** across all final tables (`customer_final`, `item_final`, `store_final`, `time_final`, `trans_final`, `fact_table_final`) to enforce referential integrity across the Star Schema.
 Business Impact: Guaranteed data consistency and join reliability for all downstream analytical queries.
 
 <p align="center">
@@ -135,9 +135,9 @@ Business Impact: Guaranteed data consistency and join reliability for all downst
 
 ---
 
-3.2 RFM Customer Segmentation
-Calculated core sales KPIs from `fact_table_final`: total revenue via `SUM(total_price)`, average order value via `AVG(total_price)`, and total units sold via `SUM(quantity)` — forming the monetary foundation for customer value analysis.  
-Business Impact: Provided a framework for targeted marketing by identifying high-value vs. at-risk customers.
+3.2 Sales Performance KPIs
+Calculated core sales metrics from `fact_table_final`: total revenue via `SUM(total_price)`, average order value via `AVG(total_price)`, and total units sold via `SUM(quantity)`.
+Business Impact: Established the monetary baseline for evaluating customer value and product performance.
 
 <p align="center">
 <img src="image/13_Customer_Segmentation_RFM.png.PNG" width="900">
@@ -160,8 +160,8 @@ Used a `monthly` CTE with the `LAG()` Window Function to calculate **Month-over-
 
 ---
 
-3.4 Product & Performance Intelligence
-Built a multi-CTE cohort pipeline: identified each customer's first purchase month using `MIN(t.year || t.month)`, then tracked their purchasing activity across subsequent months to measure active customer counts per cohort over time.  
+3.4 Advanced Cohort Analysis
+Built a multi-CTE cohort pipeline: identified each customer's first purchase month using `MIN(t.year || t.month)`, then tracked their purchasing activity across subsequent months to measure active customer counts per cohort over time.
 Business Impact: Enabled identification of long-term retention patterns and behavioral trends for strategic marketing decisions.
 
 <p align="center">
@@ -185,13 +185,13 @@ A preview of the cohort analysis output — showing active customer counts per c
 
 Challenges Faced & Solved
 
-* **Referential Integrity:** Handling missing values in ID columns without breaking table joins.
-* **Data Inflation:** Preventing duplicate records from inflating revenue and transaction KPIs.
-* **Performance:** Optimizing complex analytical queries (Cohorts/RFM) for faster execution.
+- **Referential Integrity:** Handling missing values in ID columns without breaking table joins.
+- **Data Inflation:** Preventing duplicate records from inflating revenue and transaction KPIs.
+- **Performance:** Optimizing complex analytical queries (Cohorts/RFM) for faster execution.
 
 ---
 
 About the Author
 Omar Essam
 
-* Business Information Systems – Tanta University****
+- Business Information Systems – Tanta University
