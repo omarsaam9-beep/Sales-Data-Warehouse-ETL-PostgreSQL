@@ -91,6 +91,11 @@ Handling Missing Data: Executed an UPDATE statement to replace critical missing 
 <img src="image/05_Outlier_Detection_Method.png.PNG" width="900">
 </p>
 
+Data Quality Profiling: Using COUNT(*) minus COUNT(column_name) to identify the exact volume of missing values (NULLs) across multiple dimensions like item_key, item_name, and description.
+
+Missing Value Strategy: Executing an UPDATE command to replace NULLs in critical descriptive fields with a standard 'Unknown' placeholder.
+
+Statistical Foundation: Calculating MIN, MAX, and AVG for numeric columns to establish the baseline needed for IQR (Interquartile Range) outlier detection.
 <p align="center">
 <img src="image/06_IQR_Filtering_Results.png.PNG" width="900">
 </p>
