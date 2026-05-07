@@ -194,10 +194,20 @@ Pricing: Both unit_price and total_price are cast to NUMERIC(10,2) to ensure pre
 <p align="center">
 <img src="image/11_Monthly_Revenue_Trends.png.PNG" width="900">
 </p>
+The Core Operation
+SUM(f.quantity): The script calculates the total number of units sold for each specific item.
 
-Primary Key Assignment: You are setting unique identifiers for each final table (customer_final, item_final, etc.) to ensure no duplicate records exist in the final structure.
+JOIN item_final i: It connects the sales records (fact_table_final) to the product details table so it can retrieve the actual names of the items (item_name) instead of just ID numbers.
 
-Foreign Key Constraints: You are linking the fact_table_final to all dimension tables. This creates a formal Star Schema relationship, ensuring that every transaction refers to a valid customer, item, and store.
+2. Data Cleaning
+WHERE i.item_name <> 'Unknown': This is a crucial cleaning step. It filters out any records where the item name is labeled as "Unknown," ensuring the final report only contains valid, identifiable products.
+
+3. Ranking and Limitation
+GROUP BY i.item_name: This aggregates the sales data so that every product appears as a single row with its total sales volume.
+
+ORDER BY total_units_sold DESC: It sorts the list from the highest sales to the lowest.
+
+LIMIT 10: This restricts the output to only the top 10 results.
 
 <p align="center">
 <img src="image/14_Sales_Growth_KPIs.png.PNG" width="900">
