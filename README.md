@@ -205,12 +205,10 @@ Foreign Key Constraints: You are linking the fact_table_final to all dimension t
 
 ---
 
-3.4 Advanced Cohort Analysis
-Handling Missing Values (Imputation): You are addressing data gaps by using UPDATE and SET commands to replace NULL values with the string 'Unknown'. This ensures that every row has a value, preventing errors or misleading gaps when creating charts in Power BI.
 
-Data Integrity Check: You are running SELECT queries to count both the total rows and the number of NULL values across critical columns like customer_key, name, and nid.
-
-Outlier Detection (Sanity Check): You are calculating the MIN, MAX, and AVG for numerical fields (Quantity and Price) using ROUND to detect any extreme or illogical values that might skew your final analysis.
+* **Primary Key (PK) Assignment**: You are defining the unique identifier for each dimension table (`customer_final`, `item_final`, `store_final`, `time_final`, and `trans_final`). This ensures that every record in these tables is unique and can be accurately referenced.
+* **Foreign Key (FK) Constraints**: You are establishing relationships by linking the IDs in your `fact_table_final` to the corresponding Primary Keys in the dimension tables. 
+* **Star Schema Architecture**: This specific step officially builds the **Star Schema** by connecting the central fact table to its dimensions. This structure is essential for maintaining data integrity and is a requirement for building correct relationships in **Power BI**.
 
 <p align="center">
 <img src="image/12_Top_Performing_Products.png.PNG" width="900">
