@@ -122,8 +122,14 @@ Schema Finalization: Cleaned and validated the fact_table_clean before promoting
 
 ---
 
-2.2 Schema Architecture & Integrity
-Extracted time attributes (`hour`, `day`, `week`, `month`, `quarter`, `year`) from raw timestamps using `TO_TIMESTAMP` and `EXTRACT`, then populated all derived columns in `time_clean` to prepare the time dimension for the Star Schema.
+1.6 Data Quality Audit (Null Check)
+This step involves a final audit of the cleaned tables to ensure that the imputation and cleaning processes were successful.
+
+Operations in this Image:
+
+Null Identification: Executed a selective COUNT query on the fact_table_clean to identify any remaining missing values in the quantity column.
+
+Validation: This check acts as a quality gate to verify that all transaction records have valid numeric data before moving to the analytical phase.
 
 <p align="center">
 <img src="image/08_Schema_Architecture_Overview.png.PNG" width="900">
