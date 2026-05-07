@@ -222,9 +222,7 @@ This analysis groups customers based on when they made their first purchase and 
 
 **Business Impact:** Forms the foundation for a full Retention Heatmap — answering questions like "Of the customers who joined in January, how many were still buying in June?"
 
-<p align="center">
-<img src="image/12_Top_Performing_Products.png.PNG" width="900">
-</p>
+
 
 <p align="center">
 <img src="image/15_Quarterly_Performance_Report.png.PNG" width="900">
