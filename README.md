@@ -78,8 +78,14 @@ Leveraged the PostgreSQL `ctid` system column with `ROW_NUMBER()` to identify an
 
 ---
 
-1.5 Outlier Detection & Treatment
-Profiled all numeric columns in `item_clean` and `fact_table_clean` using `COUNT`, `MIN`, `MAX`, and `AVG`. Then applied the **IQR (Interquartile Range)** method via `PERCENTILE_CONT(0.25/0.75)` to detect and neutralize extreme outliers in `quantity` and `total_price`.
+1.5 Data Profiling & Null Value Management
+In this phase, a comprehensive audit was performed on the numeric and text columns within the item_clean and fact_table_clean tables to identify data quality gaps.
+
+Key Operations Performed:
+
+Data Profiling: Utilized the COUNT function to compare total rows against non-null entries for columns like item_key, item_name, and description to calculate exact null counts.
+
+Handling Missing Data: Executed an UPDATE statement to replace critical missing values in the item_name column with the placeholder 'Unknown'.
 
 <p align="center">
 <img src="image/05_Outlier_Detection_Method.png.PNG" width="900">
