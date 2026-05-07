@@ -144,13 +144,6 @@ Transforming the cleaned data into high-value executive insights.
 
 3.1 Schema Integrity & Star Schema Finalization
 
-**Final Fact Table Creation:** Generating `fact_table_final` by selecting data from the cleaned `fact_table_clean`.
-
-**Data Type Casting:** Converting columns from TEXT to their appropriate technical formats:
-
-- **Quantity:** Rounded and cast to `SMALLINT` for efficient storage.
-- **Pricing:** Both `unit_price` and `total_price` cast to `NUMERIC(10,2)` to ensure precision for financial calculations.
-
 **Defining Primary Keys:**
 - Sets columns like `customer_key`, `item_key`, and `store_key` as Primary Keys to uniquely identify every row in the dimension tables — preventing duplicate records and speeding up data retrieval.
 
@@ -178,6 +171,7 @@ Business Impact: Established the monetary baseline for evaluating customer value
 **Quarterly Revenue Analysis:** Computed quarterly revenue by joining `fact_table_final` with `time_final`, grouped by `year` and `quarter`.
 
 **Top Products Ranking:**
+
 - **`SUM(f.quantity)`:** Calculates the total number of units sold for each item.
 - **`JOIN item_final`:** Connects sales records to the product details table to retrieve actual item names instead of ID numbers.
 - **`WHERE i.item_name <> 'Unknown'`:** Filters out unidentifiable records to ensure report accuracy.
