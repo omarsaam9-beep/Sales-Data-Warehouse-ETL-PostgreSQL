@@ -79,42 +79,40 @@ Leveraged the PostgreSQL `ctid` system column with `ROW_NUMBER()` to identify an
 ---
 
 1.5 Data Profiling & Null Value Management
-In this phase, a comprehensive audit was performed on the numeric and text columns within the item_clean and fact_table_clean tables to identify data quality gaps.
+In this phase, a comprehensive audit was performed on the numeric and text columns within the `item_clean` and `fact_table_clean` tables to identify data quality gaps.
 
-Key Operations Performed:
+**Key Operations Performed:**
 
-Data Profiling: Utilized the COUNT function to compare total rows against non-null entries for columns like item_key, item_name, and description to calculate exact null counts.
-
-Handling Missing Data: Executed an UPDATE statement to replace critical missing values in the item_name column with the placeholder 'Unknown'.
+- **Data Profiling:** Utilized the `COUNT` function to compare total rows against non-null entries for columns like `item_key`, `item_name`, and `description` to calculate exact null counts.
+- **Handling Missing Data:** Executed an `UPDATE` statement to replace critical missing values in the `item_name` column with the placeholder `'Unknown'`.
 
 <p align="center">
 <img src="image/05_Outlier_Detection_Method.png.PNG" width="900">
 </p>
 
-Data Quality Profiling: Using COUNT(*) minus COUNT(column_name) to identify the exact volume of missing values (NULLs) across multiple dimensions like item_key, item_name, and description.
+- **Data Quality Profiling:** Using `COUNT(*)` minus `COUNT(column_name)` to identify the exact volume of missing values (NULLs) across multiple dimensions like `item_key`, `item_name`, and `description`.
+- **Missing Value Strategy:** Executing an `UPDATE` command to replace NULLs in critical descriptive fields with a standard `'Unknown'` placeholder.
+- **Statistical Foundation:** Calculating `MIN`, `MAX`, and `AVG` for numeric columns to establish the baseline needed for IQR (Interquartile Range) outlier detection.
 
-Missing Value Strategy: Executing an UPDATE command to replace NULLs in critical descriptive fields with a standard 'Unknown' placeholder.
-
-Statistical Foundation: Calculating MIN, MAX, and AVG for numeric columns to establish the baseline needed for IQR (Interquartile Range) outlier detection.
 <p align="center">
 <img src="image/06_IQR_Filtering_Results.png.PNG" width="900">
 </p>
 
-
+---
 
 Phase 2: Data Modeling (Star Schema)
 Building a scalable analytical environment using a Star Schema architecture.
 
+---
+
 2.1 Table Creation & Optimization
 Transitioning from staging tables to final tables while optimizing data types for faster query execution.
 
-Key Data Operations:
+**Key Data Operations:**
 
-Outlier Neutralization: Replaced extreme outlier values in the quantity column using IQR (Interquartile Range) bounds calculated via Common Table Expressions (CTEs).
-
-Missing Value Imputation: Filled NULL quantities with per-item average values to ensure completeness without distorting overall trends.
-
-Schema Finalization: Cleaned and validated the fact_table_clean before promoting it to the core Star Schema layer.
+- **Outlier Neutralization:** Replaced extreme outlier values in the `quantity` column using IQR (Interquartile Range) bounds calculated via Common Table Expressions (CTEs).
+- **Missing Value Imputation:** Filled NULL quantities with per-item average values to ensure completeness without distorting overall trends.
+- **Schema Finalization:** Cleaned and validated the `fact_table_clean` before promoting it to the core Star Schema layer.
 
 <p align="center">
 <img src="image/07_Creating_Final_Tables.png.PNG" width="900">
@@ -122,21 +120,16 @@ Schema Finalization: Cleaned and validated the fact_table_clean before promoting
 
 ---
 
-1.6 Data Quality Audit (Null Check)
-Data Quality Auditing: You are performing a "Null Check" on the time_clean table. This query calculates the total row count and the number of missing values across all time-related columns (such as date, hour, and year) to verify data integrity before final transformation.
+2.2 Schema Architecture & Integrity
+**Data Quality Auditing:** Performing a comprehensive null check on the `time_clean` table — calculating total rows and identifying missing values across all time-related columns (`date`, `hour`, `day`, `week`, `month`, `quarter`, `year`) to verify data integrity before final transformation.
+
+**Temporal Feature Engineering:** Rebuilding time features by extracting `hour`, `day`, `month`, `quarter`, and `year` from the raw date string using `TO_TIMESTAMP` and `EXTRACT`. A `CASE` statement is used to categorize dates into labeled week-of-month buckets (`'1st Week'`, `'2nd Week'`, `'3rd Week'`, `'4th Week'`).
 
 <p align="center">
 <img src="image/08_Schema_Architecture_Overview.png.PNG" width="900">
 </p>
 
-Initial Schema Setup: You are establishing the base database structure by creating primary tables such as customer, fact_table, and item. All columns are initially defined as TEXT to allow for flexible data ingestion without type-mismatch errors.
-
-Data Standardization: During the cleaning phase, you are refining the customer_clean table using TRIM to remove extra spaces, INITCAP to standardize name casing, and NULLIF to convert empty strings into proper NULL values.
-
-Data Quality Auditing: You are performing a comprehensive "Null Check" on the time_clean table to calculate total rows and identify missing values across time-related columns like hour, day, and year.
-
-Temporal Feature Engineering: You are rebuilding time features by extracting the hour, day, month, and year from the raw date string. Additionally, you are using a CASE statement to categorize dates into specific weeks of the month. 
-
+**Final Production Tables:** Creating `trans_final` and `fact_table_final` by selecting and casting numeric columns — `quantity::SMALLINT`, `unit_price::NUMERIC(10,2)`, `total_price::NUMERIC(10,2)` — to enforce proper data types for analytical performance.
 
 <p align="center">
 <img src="image/09_Primary_Foreign_Keys_Setup.png.PNG" width="900">
@@ -150,13 +143,19 @@ Transforming the cleaned data into high-value executive insights.
 ---
 
 3.1 Schema Integrity & Star Schema Finalization
-Final Fact Table Creation: You are generating the fact_table_final by selecting data from the cleaned version of the fact table (fact_table_clean).
 
-Data Type Casting: To optimize the database for analysis, you are converting columns from TEXT to their appropriate technical formats:
+**Final Fact Table Creation:** Generating `fact_table_final` by selecting data from the cleaned `fact_table_clean`.
 
-Quantity: Rounded and cast to SMALLINT for efficient storage.
+**Data Type Casting:** Converting columns from TEXT to their appropriate technical formats:
 
-Pricing: Both unit_price and total_price are cast to NUMERIC(10,2) to ensure precision for financial calculations. 
+- **Quantity:** Rounded and cast to `SMALLINT` for efficient storage.
+- **Pricing:** Both `unit_price` and `total_price` cast to `NUMERIC(10,2)` to ensure precision for financial calculations.
+
+**Defining Primary Keys:**
+- Sets columns like `customer_key`, `item_key`, and `store_key` as Primary Keys to uniquely identify every row in the dimension tables — preventing duplicate records and speeding up data retrieval.
+
+**Defining Foreign Keys:**
+- Adds Foreign Key constraints to `fact_table_final` linking it to all dimension tables — `customer_final`, `item_final`, `store_final`, `time_final`, and `trans_final` — creating the "Star" in the Star Schema where the fact table sits at the center connected to all descriptive dimensions.
 
 <p align="center">
 <img src="image/10_Cohort_Analysis_Query.png.PNG" width="900">
@@ -175,39 +174,27 @@ Business Impact: Established the monetary baseline for evaluating customer value
 ---
 
 3.3 Financial & Growth KPIs
-Initial Schema Setup: You are establishing the base database structure by creating primary tables such as customer, fact_table, and item. All columns are initially defined as TEXT to allow for flexible data ingestion without type-mismatch errors.
 
-Data Standardization: During the cleaning phase, you are refining the customer_clean table using TRIM to remove extra spaces, INITCAP to standardize name casing, and NULLIF to convert empty strings into proper NULL values.
+**Quarterly Revenue Analysis:** Computed quarterly revenue by joining `fact_table_final` with `time_final`, grouped by `year` and `quarter`.
 
-Data Quality Auditing: You are performing a comprehensive "Null Check" on the time_clean table to calculate total rows and identify missing values across time-related columns like hour, day, and year.
-
-Temporal Feature Engineering: You are rebuilding time features by extracting the hour, day, month, and year from the raw date string. Additionally, you are using a CASE statement to categorize dates into specific weeks of the month.
-
-Final Fact Table Creation: You are generating the fact_table_final by selecting data from the cleaned version of the fact table (fact_table_clean).
-
-Data Type Casting: To optimize the database for analysis, you are converting columns from TEXT to their appropriate technical formats:
-
-Quantity: Rounded and cast to SMALLINT for efficient storage.
-
-Pricing: Both unit_price and total_price are cast to NUMERIC(10,2) to ensure precision for financial calculations.
+**Top Products Ranking:**
+- **`SUM(f.quantity)`:** Calculates the total number of units sold for each item.
+- **`JOIN item_final`:** Connects sales records to the product details table to retrieve actual item names instead of ID numbers.
+- **`WHERE i.item_name <> 'Unknown'`:** Filters out unidentifiable records to ensure report accuracy.
+- **`ORDER BY total_units_sold DESC LIMIT 10`:** Returns only the top 10 best-selling products.
 
 <p align="center">
 <img src="image/11_Monthly_Revenue_Trends.png.PNG" width="900">
 </p>
-The Core Operation
-SUM(f.quantity): The script calculates the total number of units sold for each specific item.
 
-JOIN item_final i: It connects the sales records (fact_table_final) to the product details table so it can retrieve the actual names of the items (item_name) instead of just ID numbers.
+**Month-over-Month (MoM) Revenue Growth:**
 
-2. Data Cleaning
-WHERE i.item_name <> 'Unknown': This is a crucial cleaning step. It filters out any records where the item name is labeled as "Unknown," ensuring the final report only contains valid, identifiable products.
+This analysis performs a Time-Series calculation using a `monthly` CTE with the `LAG()` Window Function:
 
-3. Ranking and Limitation
-GROUP BY i.item_name: This aggregates the sales data so that every product appears as a single row with its total sales volume.
-
-ORDER BY total_units_sold DESC: It sorts the list from the highest sales to the lowest.
-
-LIMIT 10: This restricts the output to only the top 10 results.
+- **`WITH monthly AS (...)`:** Joins `fact_table_final` with `time_final` and aggregates `SUM(total_price)` for every unique `year` and `month` combination.
+- **`LAG(revenue)`:** Fetches the revenue from the preceding month for direct comparison, labeled as `prev_month_revenue`.
+- **Growth Formula:** `(Current Month - Previous Month) / Previous Month × 100`, rounded to 2 decimal places.
+- **Note:** The first month returns `[null]` for `prev_month_revenue` as expected — no prior period exists to compare against.
 
 <p align="center">
 <img src="image/14_Sales_Growth_KPIs.png.PNG" width="900">
@@ -215,30 +202,27 @@ LIMIT 10: This restricts the output to only the top 10 results.
 
 ---
 
+3.4 Advanced Cohort Analysis
 
-Defining Primary Keys (The Blue Section)
-Goal: To uniquely identify every row in your dimension tables.
+This analysis groups customers based on when they made their first purchase and tracks how many returned in subsequent months.
 
-Action: It sets columns like customer_key, item_key, and store_key as Primary Keys.
+**The First CTE: `first_purchase`**
+- Finds the "birth date" of each customer using `MIN(date)` per `customer_key`.
+- Formats the result as `YYYY-MM` using `LPAD` and string concatenation to establish the **Cohort Month**.
 
-Effect: This ensures that you don't have duplicate records for the same customer or product, and it significantly speeds up data retrieval (searching).
+**The Second CTE: `purchases`**
+- Maps every transaction to its specific `purchase_month` in `YYYY-MM` format — listing all months each customer was active.
 
-2. Defining Foreign Keys (The Bottom Section)
-Goal: To create a formal link between your "Fact Table" (where the sales happen) and your "Dimension Tables" (where the details live).
+**The Third CTE: `cohort_data`**
+- Joins the two previous CTEs on `customer_key`.
+- Groups by `cohort_month` and `purchase_month`.
+- Uses `COUNT(DISTINCT customer_key)` to measure unique active customers per cohort-to-purchase month combination.
 
-Action: It adds Foreign Key constraints to the fact_table_final. For example:
-
-The customer_key in the Fact Table must exist in the customer_final table.
-
-The item_key in the Fact Table must exist in the item_final table.
-
-Relationship: This creates the "Star" in your Star Schema, where the Fact Table sits in the center, connected to all the descriptive dimensions (Customer, Item, Store, Time, Trans)
+**Business Impact:** Forms the foundation for a full Retention Heatmap — answering questions like "Of the customers who joined in January, how many were still buying in June?"
 
 <p align="center">
 <img src="image/12_Top_Performing_Products.png.PNG" width="900">
 </p>
-
-This SQL code is designed to perform a Time-Series Analysis to calculate monthly revenue and the Month-over-Month (MoM) Growth Percentage.Here is a breakdown of the code in English:1. The CTE (Common Table Expression): monthlyThe code starts with WITH monthly AS (...). This creates a temporary result set that organizes the raw data.Purpose: It joins the fact table (fact_table_final) with a time dimension table (time_final).Aggregation: It uses SUM(f.total_price) to calculate the total revenue for every unique combination of Year and Month.2. The Main Query: Analytical FunctionsThe second part of the code performs the actual "intelligence" using Window Functions:LAG(revenue): This function looks at the "previous row" in the sequence. It fetches the revenue from the preceding month so you can compare it to the current month. In the output, this is labeled as prev_month_revenue.Growth Calculation: It uses the standard growth formula:$$\text{Growth \%} = \frac{\text{Current Month} - \text{Previous Month}}{\text{Previous Month}} \times 100$$ROUND(..., 2): This ensures the resulting percentage is clean and easy to read by limiting it to two decimal places.3. Data Output AnalysisLooking at the results table in your screenshot:Row 1: The prev_month_revenue is [null] because there is no data prior to January 2014 to compare it to.Row 2 (February): You can see a massive spike. The revenue jumped from ~$496k to ~$1.12M, resulting in a 126.07% growth.Negative Growth: In April (Row 4)
 
 <p align="center">
 <img src="image/15_Quarterly_Performance_Report.png.PNG" width="900">
@@ -246,37 +230,8 @@ This SQL code is designed to perform a Time-Series Analysis to calculate monthly
 
 ---
 
-This SQL code is a classic example of **Cohort Analysis**. Its goal is to group customers based on when they made their first purchase (their "cohort") and then track how many of those customers returned to make purchases in subsequent months.
-
-Here is the step-by-step breakdown:
-
-### 1. The First CTE: `first_purchase`
-* **Goal:** To find the "birth date" of each customer.
-* **Logic:** It looks for the minimum (`MIN`) date associated with each `customer_key`.
-* **Formatting:** It uses `LPAD` and string concatenation to create a standardized `YYYY-MM` format (e.g., "2014-01"). This establishes the **Cohort Month**.
-
-### 2. The Second CTE: `purchases`
-* **Goal:** To list every single month that every customer made a purchase.
-* **Logic:** Unlike the first part, this doesn't look for the minimum; it simply maps every transaction to its specific `purchase_month` in the same `YYYY-MM` format.
-
-### 3. The Third CTE: `cohort_data`
-* **Goal:** To link the "birth month" to all "activity months."
-* **Logic:**
-    * It joins the two previous tables on `customer_key`.
-    * It groups the data by the `cohort_month` (when they started) and the `purchase_month` (when they came back).
-    * **`COUNT(DISTINCT ...)`**: This calculates the number of unique active customers for each specific cohort-to-purchase month combination.
-
----
-
-### What does this tell a Business?
-This query is the foundation for a **Retention Heatmap**. By looking at the output, you can answer questions like:
-* "Of the customers who joined in January, how many were still buying in June?"
-* "Are customers who joined in the Summer more loyal than those who joined in the Winter?"
-
-### Technical Note:
-The code uses PostgreSQL syntax (indicated by the `::TEXT` type casting). The `LPAD(..., 2, '0')` is a smart move—it ensures that Month 1 becomes "01", keeping your dates chronologically sortable as text strings.
-
-Is this for a specific project, or are you building a dashboard to visualize this retention data?
+3.5 The Final Product
+A preview of the cohort analysis output — showing active customer counts per cohort month from 2014 onward. The fully cleaned and modeled dataset is now ready for BI tools and executive reporting.
 
 <p align="center">
 <img src="image/16_Final_Cleaned_Dataset_Sample.png.PNG" width="900">
