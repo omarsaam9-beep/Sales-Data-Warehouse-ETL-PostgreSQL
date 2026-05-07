@@ -222,8 +222,7 @@ Challenges Faced & Solved
 About the Author
 Omar Essam
 
-* Business Information Systems Student – Tanta University
+* Business Information Systems  – Tanta University
 
 ```
 
----
