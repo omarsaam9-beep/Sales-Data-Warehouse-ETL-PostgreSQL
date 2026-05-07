@@ -260,4 +260,3 @@ About the Author
 Omar Essam
 
 - Business Information Systems – Tanta University
-- 
