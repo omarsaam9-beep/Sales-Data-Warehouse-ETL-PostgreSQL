@@ -222,8 +222,37 @@ This SQL code is designed to perform a Time-Series Analysis to calculate monthly
 
 ---
 
-3.5 The Final Product
-A preview of the cohort analysis output — showing active customer counts per cohort month from 2014 onward. The fully cleaned and modeled dataset is now ready for BI tools and executive reporting.
+This SQL code is a classic example of **Cohort Analysis**. Its goal is to group customers based on when they made their first purchase (their "cohort") and then track how many of those customers returned to make purchases in subsequent months.
+
+Here is the step-by-step breakdown:
+
+### 1. The First CTE: `first_purchase`
+* **Goal:** To find the "birth date" of each customer.
+* **Logic:** It looks for the minimum (`MIN`) date associated with each `customer_key`.
+* **Formatting:** It uses `LPAD` and string concatenation to create a standardized `YYYY-MM` format (e.g., "2014-01"). This establishes the **Cohort Month**.
+
+### 2. The Second CTE: `purchases`
+* **Goal:** To list every single month that every customer made a purchase.
+* **Logic:** Unlike the first part, this doesn't look for the minimum; it simply maps every transaction to its specific `purchase_month` in the same `YYYY-MM` format.
+
+### 3. The Third CTE: `cohort_data`
+* **Goal:** To link the "birth month" to all "activity months."
+* **Logic:**
+    * It joins the two previous tables on `customer_key`.
+    * It groups the data by the `cohort_month` (when they started) and the `purchase_month` (when they came back).
+    * **`COUNT(DISTINCT ...)`**: This calculates the number of unique active customers for each specific cohort-to-purchase month combination.
+
+---
+
+### What does this tell a Business?
+This query is the foundation for a **Retention Heatmap**. By looking at the output, you can answer questions like:
+* "Of the customers who joined in January, how many were still buying in June?"
+* "Are customers who joined in the Summer more loyal than those who joined in the Winter?"
+
+### Technical Note:
+The code uses PostgreSQL syntax (indicated by the `::TEXT` type casting). The `LPAD(..., 2, '0')` is a smart move—it ensures that Month 1 becomes "01", keeping your dates chronologically sortable as text strings.
+
+Is this for a specific project, or are you building a dashboard to visualize this retention data?
 
 <p align="center">
 <img src="image/16_Final_Cleaned_Dataset_Sample.png.PNG" width="900">
