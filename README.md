@@ -100,15 +100,21 @@ Statistical Foundation: Calculating MIN, MAX, and AVG for numeric columns to est
 <img src="image/06_IQR_Filtering_Results.png.PNG" width="900">
 </p>
 
----
+
 
 Phase 2: Data Modeling (Star Schema)
 Building a scalable analytical environment using a Star Schema architecture.
 
----
-
 2.1 Table Creation & Optimization
-Replaced outlier `quantity` values using IQR bounds calculated via CTEs, and filled NULL quantities with per-item average values — finalizing `fact_table_clean` before promotion to the Star Schema layer.
+Transitioning from staging tables to final tables while optimizing data types for faster query execution.
+
+Key Data Operations:
+
+Outlier Neutralization: Replaced extreme outlier values in the quantity column using IQR (Interquartile Range) bounds calculated via Common Table Expressions (CTEs).
+
+Missing Value Imputation: Filled NULL quantities with per-item average values to ensure completeness without distorting overall trends.
+
+Schema Finalization: Cleaned and validated the fact_table_clean before promoting it to the core Star Schema layer.
 
 <p align="center">
 <img src="image/07_Creating_Final_Tables.png.PNG" width="900">
