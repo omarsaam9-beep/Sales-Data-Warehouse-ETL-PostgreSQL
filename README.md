@@ -206,8 +206,11 @@ Foreign Key Constraints: You are linking the fact_table_final to all dimension t
 ---
 
 3.4 Advanced Cohort Analysis
-Built a multi-CTE cohort pipeline: identified each customer's first purchase month using `MIN(t.year || t.month)`, then tracked their purchasing activity across subsequent months to measure active customer counts per cohort over time.
-Business Impact: Enabled identification of long-term retention patterns and behavioral trends for strategic marketing decisions.
+Handling Missing Values (Imputation): You are addressing data gaps by using UPDATE and SET commands to replace NULL values with the string 'Unknown'. This ensures that every row has a value, preventing errors or misleading gaps when creating charts in Power BI.
+
+Data Integrity Check: You are running SELECT queries to count both the total rows and the number of NULL values across critical columns like customer_key, name, and nid.
+
+Outlier Detection (Sanity Check): You are calculating the MIN, MAX, and AVG for numerical fields (Quantity and Price) using ROUND to detect any extreme or illogical values that might skew your final analysis.
 
 <p align="center">
 <img src="image/12_Top_Performing_Products.png.PNG" width="900">
