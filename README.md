@@ -144,11 +144,19 @@ Transforming the cleaned data into high-value executive insights.
 
 3.1 Schema Integrity & Star Schema Finalization
 
-**Defining Primary Keys:**
-- Sets columns like `customer_key`, `item_key`, and `store_key` as Primary Keys to uniquely identify every row in the dimension tables — preventing duplicate records and speeding up data retrieval.
+**1. Defining Primary Keys (The Blue Section)**
 
-**Defining Foreign Keys:**
-- Adds Foreign Key constraints to `fact_table_final` linking it to all dimension tables — `customer_final`, `item_final`, `store_final`, `time_final`, and `trans_final` — creating the "Star" in the Star Schema where the fact table sits at the center connected to all descriptive dimensions.
+- **Goal:** To uniquely identify every row in your dimension tables.
+- **Action:** It sets columns like `customer_key`, `item_key`, and `store_key` as Primary Keys.
+- **Effect:** This ensures that you don't have duplicate records for the same customer or product, and it significantly speeds up data retrieval (searching).
+
+**2. Defining Foreign Keys (The Bottom Section)**
+
+- **Goal:** To create a formal link between your "Fact Table" (where the sales happen) and your "Dimension Tables" (where the details live).
+- **Action:** It adds Foreign Key constraints to the `fact_table_final`. For example:
+  - The `customer_key` in the Fact Table must exist in the `customer_final` table.
+  - The `item_key` in the Fact Table must exist in the `item_final` table.
+- **Relationship:** This creates the "Star" in your Star Schema, where the Fact Table sits in the center, connected to all the descriptive dimensions (Customer, Item, Store, Time, Trans).
 
 <p align="center">
 <img src="image/10_Cohort_Analysis_Query.png.PNG" width="900">
@@ -245,3 +253,4 @@ About the Author
 Omar Essam
 
 - Business Information Systems – Tanta University
+- 
