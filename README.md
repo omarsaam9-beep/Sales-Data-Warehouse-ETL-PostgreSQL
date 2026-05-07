@@ -195,7 +195,9 @@ Pricing: Both unit_price and total_price are cast to NUMERIC(10,2) to ensure pre
 <img src="image/11_Monthly_Revenue_Trends.png.PNG" width="900">
 </p>
 
-Used a `monthly` CTE with the `LAG()` Window Function to calculate **Month-over-Month (MoM)** revenue growth percentage across all years — enabling trend detection and performance benchmarking over time.
+Primary Key Assignment: You are setting unique identifiers for each final table (customer_final, item_final, etc.) to ensure no duplicate records exist in the final structure.
+
+Foreign Key Constraints: You are linking the fact_table_final to all dimension tables. This creates a formal Star Schema relationship, ensuring that every transaction refers to a valid customer, item, and store.
 
 <p align="center">
 <img src="image/14_Sales_Growth_KPIs.png.PNG" width="900">
