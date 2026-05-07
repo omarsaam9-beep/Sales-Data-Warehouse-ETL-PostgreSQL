@@ -216,9 +216,23 @@ LIMIT 10: This restricts the output to only the top 10 results.
 ---
 
 
-* **Primary Key (PK) Assignment**: You are defining the unique identifier for each dimension table (`customer_final`, `item_final`, `store_final`, `time_final`, and `trans_final`). This ensures that every record in these tables is unique and can be accurately referenced.
-* **Foreign Key (FK) Constraints**: You are establishing relationships by linking the IDs in your `fact_table_final` to the corresponding Primary Keys in the dimension tables. 
-* **Star Schema Architecture**: This specific step officially builds the **Star Schema** by connecting the central fact table to its dimensions. This structure is essential for maintaining data integrity and is a requirement for building correct relationships in **Power BI**.
+Defining Primary Keys (The Blue Section)
+Goal: To uniquely identify every row in your dimension tables.
+
+Action: It sets columns like customer_key, item_key, and store_key as Primary Keys.
+
+Effect: This ensures that you don't have duplicate records for the same customer or product, and it significantly speeds up data retrieval (searching).
+
+2. Defining Foreign Keys (The Bottom Section)
+Goal: To create a formal link between your "Fact Table" (where the sales happen) and your "Dimension Tables" (where the details live).
+
+Action: It adds Foreign Key constraints to the fact_table_final. For example:
+
+The customer_key in the Fact Table must exist in the customer_final table.
+
+The item_key in the Fact Table must exist in the item_final table.
+
+Relationship: This creates the "Star" in your Star Schema, where the Fact Table sits in the center, connected to all the descriptive dimensions (Customer, Item, Store, Time, Trans)
 
 <p align="center">
 <img src="image/12_Top_Performing_Products.png.PNG" width="900">
