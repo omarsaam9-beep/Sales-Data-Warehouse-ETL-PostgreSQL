@@ -175,7 +175,21 @@ Business Impact: Established the monetary baseline for evaluating customer value
 ---
 
 3.3 Financial & Growth KPIs
-Computed quarterly revenue by joining `fact_table_final` with `time_final`, grouped by `year` and `quarter`. Ranked the top 10 best-selling products by total units sold using `SUM(quantity) ... ORDER BY DESC LIMIT 10`, excluding Unknown items.
+Initial Schema Setup: You are establishing the base database structure by creating primary tables such as customer, fact_table, and item. All columns are initially defined as TEXT to allow for flexible data ingestion without type-mismatch errors.
+
+Data Standardization: During the cleaning phase, you are refining the customer_clean table using TRIM to remove extra spaces, INITCAP to standardize name casing, and NULLIF to convert empty strings into proper NULL values.
+
+Data Quality Auditing: You are performing a comprehensive "Null Check" on the time_clean table to calculate total rows and identify missing values across time-related columns like hour, day, and year.
+
+Temporal Feature Engineering: You are rebuilding time features by extracting the hour, day, month, and year from the raw date string. Additionally, you are using a CASE statement to categorize dates into specific weeks of the month.
+
+Final Fact Table Creation: You are generating the fact_table_final by selecting data from the cleaned version of the fact table (fact_table_clean).
+
+Data Type Casting: To optimize the database for analysis, you are converting columns from TEXT to their appropriate technical formats:
+
+Quantity: Rounded and cast to SMALLINT for efficient storage.
+
+Pricing: Both unit_price and total_price are cast to NUMERIC(10,2) to ensure precision for financial calculations.
 
 <p align="center">
 <img src="image/11_Monthly_Revenue_Trends.png.PNG" width="900">
