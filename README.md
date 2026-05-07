@@ -40,6 +40,8 @@ Identified missing values, inconsistent formats, and duplicate records in the so
 <br>
 <img src="image/01_Initial_Data_Check.png.PNG" width="900">
 
+
+
 1.2 Handling Missing Data
 Replaced NULLs with 'Unknown' where appropriate to preserve referential integrity during joins.
 <br>
