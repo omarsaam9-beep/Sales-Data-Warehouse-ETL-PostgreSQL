@@ -129,7 +129,16 @@ Transitioning from staging tables to final tables while optimizing data types fo
 <img src="image/08_Schema_Architecture_Overview.png.PNG" width="900">
 </p>
 
-**Final Production Tables:** Creating `trans_final` and `fact_table_final` by selecting and casting numeric columns — `quantity::SMALLINT`, `unit_price::NUMERIC(10,2)`, `total_price::NUMERIC(10,2)` — to enforce proper data types for analytical performance.
+Data Parsing: Converts raw date strings into standard PostgreSQL timestamps using TO_TIMESTAMP to ensure temporal accuracy.
+
+Feature Extraction: Utilizes the EXTRACT function to isolate specific attributes, including Year, Month, Day, and Hour.
+
+Quarterly Categorization: Dynamically generates fiscal quarters (e.g., Q1, Q2) by concatenating the extracted quarter integer with a 'Q' prefix.
+
+Weekly Cycle Logic: Implements a CASE statement with a modulo operator (% 4) to categorize ISO weeks into a recurring 4-week monthly cycle (1st Week through 4th Week).
+
+Analysis Use Case:
+This transformation enables advanced business insights, such as identifying peak sales hours, comparing quarterly performance, and analyzing weekly consumer behavior trends.
 
 <p align="center">
 <img src="image/09_Primary_Foreign_Keys_Setup.png.PNG" width="900">
