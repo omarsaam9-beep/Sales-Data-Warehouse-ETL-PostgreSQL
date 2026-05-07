@@ -129,7 +129,14 @@ Data Quality Auditing: You are performing a "Null Check" on the time_clean table
 <img src="image/08_Schema_Architecture_Overview.png.PNG" width="900">
 </p>
 
-Created final production tables (`trans_final`, `fact_table_final`) by selecting and casting numeric columns — `quantity::SMALLINT`, `unit_price::NUMERIC(10,2)`, `total_price::NUMERIC(10,2)` — to enforce proper data types for analytical performance.
+Initial Schema Setup: You are establishing the base database structure by creating primary tables such as customer, fact_table, and item. All columns are initially defined as TEXT to allow for flexible data ingestion without type-mismatch errors.
+
+Data Standardization: During the cleaning phase, you are refining the customer_clean table using TRIM to remove extra spaces, INITCAP to standardize name casing, and NULLIF to convert empty strings into proper NULL values.
+
+Data Quality Auditing: You are performing a comprehensive "Null Check" on the time_clean table to calculate total rows and identify missing values across time-related columns like hour, day, and year.
+
+Temporal Feature Engineering: You are rebuilding time features by extracting the hour, day, month, and year from the raw date string. Additionally, you are using a CASE statement to categorize dates into specific weeks of the month. 
+
 
 <p align="center">
 <img src="image/09_Primary_Foreign_Keys_Setup.png.PNG" width="900">
