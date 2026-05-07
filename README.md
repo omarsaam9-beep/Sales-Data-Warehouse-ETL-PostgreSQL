@@ -214,6 +214,8 @@ Foreign Key Constraints: You are linking the fact_table_final to all dimension t
 <img src="image/12_Top_Performing_Products.png.PNG" width="900">
 </p>
 
+This SQL code is designed to perform a Time-Series Analysis to calculate monthly revenue and the Month-over-Month (MoM) Growth Percentage.Here is a breakdown of the code in English:1. The CTE (Common Table Expression): monthlyThe code starts with WITH monthly AS (...). This creates a temporary result set that organizes the raw data.Purpose: It joins the fact table (fact_table_final) with a time dimension table (time_final).Aggregation: It uses SUM(f.total_price) to calculate the total revenue for every unique combination of Year and Month.2. The Main Query: Analytical FunctionsThe second part of the code performs the actual "intelligence" using Window Functions:LAG(revenue): This function looks at the "previous row" in the sequence. It fetches the revenue from the preceding month so you can compare it to the current month. In the output, this is labeled as prev_month_revenue.Growth Calculation: It uses the standard growth formula:$$\text{Growth \%} = \frac{\text{Current Month} - \text{Previous Month}}{\text{Previous Month}} \times 100$$ROUND(..., 2): This ensures the resulting percentage is clean and easy to read by limiting it to two decimal places.3. Data Output AnalysisLooking at the results table in your screenshot:Row 1: The prev_month_revenue is [null] because there is no data prior to January 2014 to compare it to.Row 2 (February): You can see a massive spike. The revenue jumped from ~$496k to ~$1.12M, resulting in a 126.07% growth.Negative Growth: In April (Row 4)
+
 <p align="center">
 <img src="image/15_Quarterly_Performance_Report.png.PNG" width="900">
 </p>
