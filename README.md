@@ -97,7 +97,7 @@ Building a scalable analytical environment using a Star Schema architecture.
 ---
 
 2.1 Table Creation & Optimization
-Replaced outlier `quantity` values using IQR bounds calculated via CTEs, and filled NULL quantities with per-item average values — finalizing the `fact_table_clean` before promotion to the Star Schema layer.
+Replaced outlier `quantity` values using IQR bounds calculated via CTEs, and filled NULL quantities with per-item average values — finalizing `fact_table_clean` before promotion to the Star Schema layer.
 
 <p align="center">
 <img src="image/07_Creating_Final_Tables.png.PNG" width="900">
@@ -106,13 +106,13 @@ Replaced outlier `quantity` values using IQR bounds calculated via CTEs, and fil
 ---
 
 2.2 Schema Architecture & Integrity
-Profiled and cleaned the `time_clean` table by extracting `hour`, `day`, `week`, `month`, `quarter`, and `year` from raw timestamps using `EXTRACT` and `TO_TIMESTAMP`. Handled NULLs in all derived time columns.
+Extracted time attributes (`hour`, `day`, `week`, `month`, `quarter`, `year`) from raw timestamps using `TO_TIMESTAMP` and `EXTRACT`, then populated all derived columns in `time_clean` to prepare the time dimension for the Star Schema.
 
 <p align="center">
 <img src="image/08_Schema_Architecture_Overview.png.PNG" width="900">
 </p>
 
-Created final production tables (`customer_final`, `item_final`, `store_final`, `time_final`, `trans_final`, `fact_table_final`) and enforced **Primary Keys (PK)** and **Foreign Keys (FK)** to establish referential integrity across the Star Schema.
+Created final production tables (`trans_final`, `fact_table_final`) by selecting and casting numeric columns — `quantity::SMALLINT`, `unit_price::NUMERIC(10,2)`, `total_price::NUMERIC(10,2)` — to enforce proper data types for analytical performance.
 
 <p align="center">
 <img src="image/09_Primary_Foreign_Keys_Setup.png.PNG" width="900">
@@ -126,8 +126,8 @@ Transforming the cleaned data into high-value executive insights.
 ---
 
 3.1 Advanced Cohort Analysis
-Built a multi-CTE cohort pipeline: identified each customer's first purchase month, then tracked their activity across subsequent months to measure active customer counts per cohort over time.  
-Business Impact: Enabled identification of retention patterns and behavioral trends for targeted marketing.
+Established **Primary Keys (PK)** and **Foreign Keys (FK)** across all final tables (`customer_final`, `item_final`, `store_final`, `time_final`, `trans_final`, `fact_table_final`) to enforce referential integrity across the Star Schema.  
+Business Impact: Guaranteed data consistency and join reliability for all downstream analytical queries.
 
 <p align="center">
 <img src="image/10_Cohort_Analysis_Query.png.PNG" width="900">
@@ -146,13 +146,13 @@ Business Impact: Provided a framework for targeted marketing by identifying high
 ---
 
 3.3 Financial & Growth KPIs
-Built a `COALESCE`-based transformation pipeline for `customer_final`, standardizing keys and handling NULLs. Computed quarterly revenue by joining `fact_table_final` with `time_final`, and ranked top products by total units sold using `ORDER BY ... DESC`.
+Computed quarterly revenue by joining `fact_table_final` with `time_final`, grouped by `year` and `quarter`. Ranked the top 10 best-selling products by total units sold using `SUM(quantity) ... ORDER BY DESC LIMIT 10`, excluding Unknown items.
 
 <p align="center">
 <img src="image/11_Monthly_Revenue_Trends.png.PNG" width="900">
 </p>
 
-Used a `monthly` CTE with `LAG()` Window Function to calculate Month-over-Month (MoM) revenue growth percentage across all years, enabling trend detection and performance benchmarking.
+Used a `monthly` CTE with the `LAG()` Window Function to calculate **Month-over-Month (MoM)** revenue growth percentage across all years — enabling trend detection and performance benchmarking over time.
 
 <p align="center">
 <img src="image/14_Sales_Growth_KPIs.png.PNG" width="900">
@@ -161,7 +161,8 @@ Used a `monthly` CTE with `LAG()` Window Function to calculate Month-over-Month 
 ---
 
 3.4 Product & Performance Intelligence
-Applied Primary and Foreign Key constraints across all final tables to enforce Star Schema integrity, then executed quarterly revenue aggregations and top-product rankings to identify business performance drivers.
+Built a multi-CTE cohort pipeline: identified each customer's first purchase month using `MIN(t.year || t.month)`, then tracked their purchasing activity across subsequent months to measure active customer counts per cohort over time.  
+Business Impact: Enabled identification of long-term retention patterns and behavioral trends for strategic marketing decisions.
 
 <p align="center">
 <img src="image/12_Top_Performing_Products.png.PNG" width="900">
@@ -174,7 +175,7 @@ Applied Primary and Foreign Key constraints across all final tables to enforce S
 ---
 
 3.5 The Final Product
-A preview of the cohort analysis output showing active customer counts per cohort month — the cleaned dataset is now fully ready for BI tools and executive reporting.
+A preview of the cohort analysis output — showing active customer counts per cohort month from 2014 onward. The fully cleaned and modeled dataset is now ready for BI tools and executive reporting.
 
 <p align="center">
 <img src="image/16_Final_Cleaned_Dataset_Sample.png.PNG" width="900">
@@ -193,4 +194,4 @@ Challenges Faced & Solved
 About the Author
 Omar Essam
 
-* Business Information Systems – Tanta University
+* Business Information Systems – Tanta University****
