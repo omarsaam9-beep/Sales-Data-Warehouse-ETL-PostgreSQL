@@ -150,8 +150,13 @@ Transforming the cleaned data into high-value executive insights.
 ---
 
 3.1 Schema Integrity & Star Schema Finalization
-Established **Primary Keys (PK)** and **Foreign Keys (FK)** across all final tables (`customer_final`, `item_final`, `store_final`, `time_final`, `trans_final`, `fact_table_final`) to enforce referential integrity across the Star Schema.
-Business Impact: Guaranteed data consistency and join reliability for all downstream analytical queries.
+Final Fact Table Creation: You are generating the fact_table_final by selecting data from the cleaned version of the fact table (fact_table_clean).
+
+Data Type Casting: To optimize the database for analysis, you are converting columns from TEXT to their appropriate technical formats:
+
+Quantity: Rounded and cast to SMALLINT for efficient storage.
+
+Pricing: Both unit_price and total_price are cast to NUMERIC(10,2) to ensure precision for financial calculations. 
 
 <p align="center">
 <img src="image/10_Cohort_Analysis_Query.png.PNG" width="900">
