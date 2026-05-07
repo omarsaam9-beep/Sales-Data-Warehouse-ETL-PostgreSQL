@@ -123,13 +123,7 @@ Schema Finalization: Cleaned and validated the fact_table_clean before promoting
 ---
 
 1.6 Data Quality Audit (Null Check)
-This step involves a final audit of the cleaned tables to ensure that the imputation and cleaning processes were successful.
-
-Operations in this Image:
-
-Null Identification: Executed a selective COUNT query on the fact_table_clean to identify any remaining missing values in the quantity column.
-
-Validation: This check acts as a quality gate to verify that all transaction records have valid numeric data before moving to the analytical phase.
+Data Quality Auditing: You are performing a "Null Check" on the time_clean table. This query calculates the total row count and the number of missing values across all time-related columns (such as date, hour, and year) to verify data integrity before final transformation.
 
 <p align="center">
 <img src="image/08_Schema_Architecture_Overview.png.PNG" width="900">
